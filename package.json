@@ -1,5 +1,6 @@
 {
-  "name": "my-app",
+  "name": "quizzScholl",
+  "slug": "quizzScholl",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
