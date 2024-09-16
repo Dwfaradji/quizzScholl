@@ -6,11 +6,20 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import * as React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-const Stack = createNativeStackNavigator();
 import { useColorScheme } from '@/components/useColorScheme';
 import QuizzScreen from "@/app/(tabs)/quizzScreen";
-import TabOneScreen from "@/app/(tabs)";
+import Index from "@/app/(tabs)";
+
+// Définition des types pour les paramètres de chaque écran
+
+// Définir les paramètres de votre stack
+export type RootStackParamList = {
+  Home: undefined; // Pas de paramètres pour Home
+  Quizz: { subject: string }; // Quizz nécessite un paramètre 'subject'
+};
+
+// Typage du stack
+const Stack = createNativeStackNavigator<RootStackParamList>(); // Utiliser RootStackParamList ici
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -52,15 +61,22 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+
   return (
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DarkTheme}>
         <NavigationContainer independent={true}>
-          <Stack.Navigator initialRouteName="Index">
-            <Stack.Screen name="Home" component={TabOneScreen} />
-            <Stack.Screen name="Quizz" component={QuizzScreen} />
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={Index} />
+            <Stack.Screen
+                name="Quizz"
+                component={QuizzScreen}
+                options={({ route }) => ({
+                  // TypeScript saura que route.params a bien un 'subject'
+                  title: `${route.params?.subject || 'Quizz'} `
+                })}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </ThemeProvider>
-
   );
 }

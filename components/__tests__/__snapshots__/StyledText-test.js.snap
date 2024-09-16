@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders Index correctly 1`] = `
+<View
+  style={
+    {
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }
+>
+  <Text
+    style={
+      {
+        "fontSize": 20,
+        "fontWeight": "bold",
+      }
+    }
+  >
+    Quizz App
+  </Text>
+  <View
+    darkColor="rgba(255,255,255,0.1)"
+    lightColor="#eee"
+    style={
+      {
+        "height": 1,
+        "marginVertical": 30,
+        "width": "80%",
+      }
+    }
+  />
+  <Text>
+    Ce Quizz a été conçue pour réviser c'est cours scolaire.
+  </Text>
+  <View
+    darkColor="rgba(255,255,255,0.1)"
+    lightColor="#eee"
+    style={
+      {
+        "height": 1,
+        "marginVertical": 30,
+        "width": "80%",
+      }
+    }
+  />
+</View>
+`;
