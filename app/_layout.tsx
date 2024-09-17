@@ -9,12 +9,13 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { useColorScheme } from '@/components/useColorScheme';
 import QuizzScreen from "@/app/(tabs)/quizzScreen";
 import Index from "@/app/(tabs)";
+import {StyleSheet} from "react-native";
 
 // Définition des types pour les paramètres de chaque écran
 
 // Définir les paramètres de votre stack
 export type RootStackParamList = {
-  Home: undefined; // Pas de paramètres pour Home
+  Accueil: undefined; // Pas de paramètres pour Home
   Quizz: { subject: string }; // Quizz nécessite un paramètre 'subject'
 };
 
@@ -61,12 +62,18 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
-
   return (
-      <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DarkTheme}>
-        <NavigationContainer independent={true}>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen name="Home" component={Index} />
+      <ThemeProvider  value={colorScheme === 'dark' ? DefaultTheme : DarkTheme}  >
+        <NavigationContainer  independent={true}>
+          <Stack.Navigator
+              screenOptions={{
+                headerStyle: {
+                  backgroundColor: '#4a90e2', // Remplace cette couleur par celle que tu souhaites
+                },
+                headerTintColor: '#fff', // Couleur du texte et des icônes dans l'en-tête
+              }}
+          >
+            <Stack.Screen   name="Accueil" component={Index} />
             <Stack.Screen
                 name="Quizz"
                 component={QuizzScreen}

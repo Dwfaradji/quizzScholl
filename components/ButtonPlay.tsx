@@ -6,10 +6,8 @@ import { Button } from '@rneui/themed';
 
 
 export default function ButtonPlay ({matterName}: {matterName: string}) {
-//lorsque l'on clique sur le bouton, on affiche une autre page.
-
+    //navigation pour naviguer vers la page quizzScreen.tsx
   const navigation = useNavigation();
-  //fonction qui permet de naviguer vers la page quizzScreen.tsx
   const onPress = () => {
 //Formatage de la chaine de caractères pour la route de navigation qui va permettre de passer les données à la page quizzScreen.tsx
     const formatNameMatter = (matterName: string) => {
@@ -26,7 +24,6 @@ export default function ButtonPlay ({matterName}: {matterName: string}) {
   };
     return (
     <>
-
         <Button
             onPress={onPress}
             title={'Commencer'}
@@ -55,15 +52,6 @@ export default function ButtonPlay ({matterName}: {matterName: string}) {
             iconRight
             iconContainerStyle={{ marginLeft: 10, marginRight: -10 }}
         />
-
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
-    color: '#dc1f1f',
-  },
-});
