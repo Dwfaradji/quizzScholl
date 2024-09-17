@@ -1,32 +1,37 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import {Picker} from '@react-native-picker/picker';
 
-const Dropdown = ({ setSelectedMatterName }: { setSelectedMatterName: any }) => {
+type Props = {
+    setSelectedMatterName: (name: string) => void;
+};
+
+const Dropdown = ({ setSelectedMatterName  }:Props) => {
     const [selectedValue, setSelectedValue] = useState<string>('Français'); // Valeur par défaut
-    useEffect(() => {
-        setSelectedMatterName(selectedValue);
-    }, [selectedValue]);
+  useEffect(() => {
+      setSelectedMatterName(selectedValue);
+  }, [selectedValue, setSelectedMatterName]);
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Sélectionnez une matière :</Text>
-            <Text style={styles.selectedText}>Langage sélectionné : {selectedValue}</Text>
-
+            <Text style={styles.selectedText}>Langage sélectionné :{'\n'} {selectedValue}</Text>
             <Picker
                 selectedValue={selectedValue}
                 style={styles.picker}
                 onValueChange={(itemValue) => setSelectedValue(itemValue)}
             >
-                <Picker.Item style={{ color: '#fff' }} label="Français" value="Français" />
-                <Picker.Item label="Math" value="Math" />
-                <Picker.Item label="Anglais" value="Anglais" />
-                <Picker.Item label="Histoire" value="Histoire" />
-                <Picker.Item label="Géographie" value="Géographie" />
-                <Picker.Item label="Physique" value="Physique" />
-                <Picker.Item label="Sciences" value="Sciences" />
-                <Picker.Item label="Chimie" value="Chimie" />
-                <Picker.Item label="Svt" value="Svt" />
-                <Picker.Item label="numerique" value="numerique" />
+                <Picker.Item style={{color: '#fff'}} label="Français" value="Français"/>
+                <Picker.Item label="Math" value="Math"/>
+                <Picker.Item label="Anglais" value="Anglais"/>
+                <Picker.Item label="Histoire" value="Histoire"/>
+                <Picker.Item label="Géographie" value="Géographie"/>
+                <Picker.Item label="Physique" value="Physique"/>
+                <Picker.Item label="Sciences" value="Sciences"/>
+                <Picker.Item label="Chimie" value="Chimie"/>
+                <Picker.Item label="Svt" value="Svt"/>
+                <Picker.Item label="Numerique" value="Numerique"/>
             </Picker>
         </View>
     );
