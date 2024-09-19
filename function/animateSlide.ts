@@ -1,19 +1,37 @@
-// Gère la progression du quiz et l'animation du slide
-import {Animated} from "react-native";
+import {Animated, Easing} from "react-native";
+import {Dispatch, SetStateAction} from "react";
 
-const slideToNextQuestion = ({slideAnim, setQuestionNumber, setTimer}: {slideAnim: any, setQuestionNumber: any, setTimer: any}) => {
+
+interface Props {
+    slideAnim: Animated.Value;
+    setQuestionNumber: Dispatch<SetStateAction<number>>;
+    setTimer: Dispatch<SetStateAction<number>>;
+}
+
+const slideToNextQuestion = ({
+                                 slideAnim,
+                                 setQuestionNumber,
+                                 setTimer,
+                             }: Props) => {
     Animated.timing(slideAnim, {
-        toValue: -300,
-        duration: 300,
+        toValue: -450, // Déplacer le contenu vers la gauche
+        duration: 500,
         useNativeDriver: true,
+        easing: Easing.inOut(Easing.ease),
     }).start(() => {
+        // Une fois l'animation terminée, mettez à jour la question et réinitialisez le timer
         setQuestionNumber((prev: number) => prev + 1);
         setTimer(10);  // Réinitialiser le timer
+
+        // Réinitialiser la valeur du slideAnim pour la prochaine animation
         slideAnim.setValue(300);
-        Animated.timing(slideAnim, {
-            toValue: 0,
-            duration: 300,
+
+        // Animation pour revenir à la position d'origine avec un effet de rebond
+        Animated.spring(slideAnim, {
+            toValue: 0, // Revenir à la position d'origine
             useNativeDriver: true,
+            bounciness: 15, // Ajustez la valeur pour contrôler le rebond
+            speed: 4, // Ajustez la vitesse de l'animation
         }).start();
     });
 };

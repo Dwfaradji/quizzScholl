@@ -1,28 +1,34 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
+import {Text, useThemeColor, View} from '@/components/Themed';
 
-type Props = {
-    setSelectedMatterName: (name: string) => void;
+type DropDownProps = {
+    setSelectedMatterName: (value: string) => void;
+    lightColor?: string;
+    darkColor?: string;
 };
 
-const Dropdown = ({ setSelectedMatterName  }:Props) => {
+const Dropdown = ({setSelectedMatterName, lightColor, darkColor}: DropDownProps) => {
+    const color= useThemeColor({light: lightColor, dark: darkColor}, 'text');
     const [selectedValue, setSelectedValue] = useState<string>('Français'); // Valeur par défaut
-  useEffect(() => {
-      setSelectedMatterName(selectedValue);
-  }, [selectedValue, setSelectedMatterName]);
 
+    useEffect(() => {
+        setSelectedMatterName(selectedValue);
+    }, [selectedValue, setSelectedMatterName]);
 
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Sélectionnez une matière :</Text>
-            <Text style={styles.selectedText}>Langage sélectionné :{'\n'} {selectedValue}</Text>
+            <Text style={styles.selectedText} darkColor={"#000"} lightColor={"#000"}>Langage sélectionné
+                :{'\n'} {selectedValue}</Text>
             <Picker
                 selectedValue={selectedValue}
                 style={styles.picker}
+                itemStyle={{color}}
                 onValueChange={(itemValue) => setSelectedValue(itemValue)}
             >
-                <Picker.Item style={{color: '#fff'}} label="Français" value="Français"/>
+                <Picker.Item label="Français" value="Français"/>
                 <Picker.Item label="Math" value="Math"/>
                 <Picker.Item label="Anglais" value="Anglais"/>
                 <Picker.Item label="Histoire" value="Histoire"/>
@@ -56,9 +62,6 @@ const styles = StyleSheet.create({
     },
     selectedText: {
         textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         padding: 20,
         marginTop: 20,
         fontSize: 16,

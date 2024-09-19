@@ -1,17 +1,18 @@
 // Typage des props du composant `Timer`
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Animated, StyleSheet } from 'react-native';
+import {  StyleSheet } from 'react-native';
 import React from 'react';
-import { Text } from '@/components/Themed';
+import {Text, useThemeColor} from '@/components/Themed';
 type TimerProps = {
     timer: number;
 };
 
 const Timer  = ({timer}: TimerProps) => {
+    const color = useThemeColor({ light: "#000", dark: "#fff" }, 'text');
     return (
         <>
             <Text style={styles.timer}>
-                <Ionicons style={{margin:0}} name="timer-outline" size={25} color={timer < 5 ? "red" : "black"} /> {timer}s
+                <Ionicons style={{margin:0}} name="timer-outline" size={25} color={timer < 5 ? "red" : color}  /> {timer}s
             </Text>
         </>
     );
