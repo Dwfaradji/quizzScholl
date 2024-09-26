@@ -1,52 +1,63 @@
-import { Animated, StyleSheet } from 'react-native';
 import { Text, View } from '@/components/Themed';
 import React, { useEffect, useRef, useState } from "react";
 import questions from '../../data/quizzData';
 import Timer from "@/components/Timer";
-import {Choices} from "@/components/Choices";
+import { Choices } from "@/components/Choices";
 import Finish from "@/components/Finish";
 import slideToNextQuestion from "@/function/animateSlide";
+import { Animated } from "react-native";
+import { StyleSheet } from 'react-native';
 
-
-export default function QuizzScreen({route}: {route: any}) {
-   const categoryName = route.params.name;
-   const nameUser = route.params.nameUser;
+export default function QuizzScreen({ route }: { route: any }) {
+    const categoryName = route.params.name;
+    const nameUser = route.params.nameUser;
     const [questionNumber, setQuestionNumber] = useState<number>(0);
     const [isFinished, setIsFinished] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
     const [timer, setTimer] = useState<number>(10);
+    const [questions1, setQuestions1] = useState<any>([]);
     const slideAnim = useRef(new Animated.Value(0)).current;
 
-// Filtre les questions par matière
+
+    // Filter questions by category
     const filterQuestionsByCategory = (categoryName: string) => {
-        return questions[categoryName] || [];
+        return questions
+            .filter((item) => item.matter === categoryName && Array.isArray(item.questions))
+            .flatMap((item) => item.questions);
     };
 
-// Utilisation de la fonction
     const filteredQuestions = filterQuestionsByCategory(categoryName);
 
-    // Gère la sélection d'une réponse
+    useEffect(() => {
+        setQuestions1(filteredQuestions);
+    }, []);
+
+    // Handle answer selection
     const handleAnswerSelection = (selectedChoice: string) => {
         const currentQuestion = filteredQuestions[questionNumber];
         if (currentQuestion.correctAnswer === selectedChoice) {
-            setScore((prev) => prev + 1);
+            setScore(prev => prev + 1);
         }
-
-        // Si ce n'est pas la dernière question, on passe à la suivante, sinon fin du quiz
-        questionNumber < filteredQuestions.length - 1 ? slideToNextQuestion({slideAnim, setQuestionNumber, setTimer}) : setIsFinished(true);
+        questionNumber < filteredQuestions.length - 1 ?
+            slideToNextQuestion({ slideAnim, setQuestionNumber, setTimer }) :
+            setIsFinished(true);
     };
 
-    // Gère le compte à rebours
+    // Countdown timer effect
     useEffect(() => {
-        if (timer === 0) {
-            questionNumber < filteredQuestions.length - 1 ? slideToNextQuestion({slideAnim, setQuestionNumber, setTimer}) : setIsFinished(true);
-        } else {
-            const countdown = setTimeout(() => setTimer(timer - 1), 1000);
-            return () => clearTimeout(countdown);
+        if (!isFinished) {
+            if (timer === 0) {
+                questionNumber < filteredQuestions.length - 1 ?
+                    slideToNextQuestion({ slideAnim, setQuestionNumber, setTimer }) :
+                    setIsFinished(true);
+            } else {
+                const countdown = setTimeout(() => setTimer(prev => prev - 1), 1000);
+                return () => clearTimeout(countdown);
+            }
         }
-    }, [timer, questionNumber]);
+    }, [timer, questionNumber, isFinished]);
 
-    // Réinitialiser le quiz
+    // Reset quiz
     const resetQuiz = () => {
         setQuestionNumber(0);
         setIsFinished(false);
@@ -54,21 +65,35 @@ export default function QuizzScreen({route}: {route: any}) {
         setTimer(10);
     };
 
-    // Si le quiz est terminé
+    // Render finish screen
     if (isFinished) {
         return (
-           <Finish score={score} filteredQuestions={filteredQuestions} resetQuiz={resetQuiz} nameUser={nameUser} />
+            <Finish
+                score={score}
+                filteredQuestions={filteredQuestions}
+                resetQuiz={resetQuiz}
+                nameUser={nameUser}
+                matter={categoryName}
+            />
         );
     }
-    // Affichage du quiz
+
+    // Render quiz
     return (
         <View style={styles.container}>
             <Animated.View style={[styles.animatedContainer, { transform: [{ translateX: slideAnim }] }]}>
-                <Text style={styles.title}>{filteredQuestions[questionNumber].question}</Text>
-                <Choices choices={filteredQuestions[questionNumber].choices} onSelectChoice={handleAnswerSelection} />
+                {questions1.length > 0 && (
+                    <>
+                        <Text style={styles.title}>{questions1[questionNumber]?.question}</Text>
+                        <Choices
+                            choices={questions1[questionNumber]?.choices}
+                            onSelectChoice={handleAnswerSelection}
+                        />
+                    </>
+                )}
                 <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-                <Timer timer={timer} />
             </Animated.View>
+            <Timer timer={timer} />
         </View>
     );
 }

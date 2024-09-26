@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {Text, useThemeColor, View} from '@/components/Themed';
+import React, { useEffect, useState, useCallback } from 'react';
+import { StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { Text, useThemeColor, View } from '@/components/Themed';
+import questions from "@/data/quizzData";
 
 type DropDownProps = {
     setSelectedMatterName: (value: string) => void;
@@ -9,35 +10,36 @@ type DropDownProps = {
     darkColor?: string;
 };
 
-const Dropdown = ({setSelectedMatterName, lightColor, darkColor}: DropDownProps) => {
-    const color= useThemeColor({light: lightColor, dark: darkColor}, 'text');
-    const [selectedValue, setSelectedValue] = useState<string>('Français'); // Valeur par défaut
+const Dropdown = ({ setSelectedMatterName, lightColor, darkColor }: DropDownProps) => {
+    const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+    const [selectedValue, setSelectedValue] = useState<string>(questions[0]?.matter || ''); // Default to the first matter if available
 
     useEffect(() => {
         setSelectedMatterName(selectedValue);
     }, [selectedValue, setSelectedMatterName]);
 
+    // Optimize onValueChange with useCallback
+    const handleValueChange = useCallback((itemValue: string) => {
+        setSelectedValue(itemValue);
+    }, []);
+
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Sélectionnez une matière :</Text>
-            <Text style={styles.selectedText} darkColor={"#000"} lightColor={"#000"}>Langage sélectionné
-                :{'\n'} {selectedValue}</Text>
+            <Text style={styles.selectedText} darkColor={"#000"} lightColor={"#000"}>
+                Langage sélectionné : {"\n"} {selectedValue || 'Aucune matière sélectionnée'}
+            </Text>
             <Picker
                 selectedValue={selectedValue}
                 style={styles.picker}
-                itemStyle={{color}}
-                onValueChange={(itemValue) => setSelectedValue(itemValue)}
+                itemStyle={{ color }}
+                onValueChange={handleValueChange}
+                accessibilityLabel="Sélectionnez une matière"
+                prompt="Choisissez une matière"
             >
-                <Picker.Item label="Français" value="Français"/>
-                <Picker.Item label="Math" value="Math"/>
-                <Picker.Item label="Anglais" value="Anglais"/>
-                <Picker.Item label="Histoire" value="Histoire"/>
-                <Picker.Item label="Géographie" value="Géographie"/>
-                <Picker.Item label="Physique" value="Physique"/>
-                <Picker.Item label="Sciences" value="Sciences"/>
-                <Picker.Item label="Chimie" value="Chimie"/>
-                <Picker.Item label="Svt" value="Svt"/>
-                <Picker.Item label="Numerique" value="Numerique"/>
+                {questions.map((item) => (
+                    <Picker.Item label={item.matter} value={item.matter} key={item.matter} />
+                ))}
             </Picker>
         </View>
     );

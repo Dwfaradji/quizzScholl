@@ -1,21 +1,43 @@
-import React from 'react';
-import {Text, View} from "@/components/Themed";
-import {Button} from "@rneui/themed";
-import {StyleSheet} from "react-native";
+import React, { useContext, useEffect } from 'react';
+import { Text, View } from "@/components/Themed";
+import { Button } from "@rneui/themed";
+import { StyleSheet } from "react-native";
+import { useMyContext } from "@/context/UserProvider";
 
 type Props = {
     score: number;
     filteredQuestions: any[];
     resetQuiz: () => void;
     nameUser: string;
+    matter: string;
 };
 
-const Finish = ({score, filteredQuestions, resetQuiz, nameUser}: Props) => {
+const Finish = ({ score, filteredQuestions, resetQuiz, nameUser, matter }: Props) => {
+    const [state, dispatch] = useMyContext();
+
+    useEffect(() => {
+        console.log("Mise à jour du score pour l'utilisateur :", nameUser);
+        console.log("Score :", score);
+        console.log("Matière :", matter);
+
+        // Exemple pour mettre à jour une matière
+        dispatch({
+            type: 'ADD_MATTER',
+            payload: {
+                user: nameUser,
+                matter: matter,
+                score: score,
+            }
+        });
+    }, [score, matter, nameUser, dispatch]);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Félicitations !{'\n'} Vous avez terminé le quiz.</Text>
-            <Text style={styles.title}>Votre score  {'\n'} {'\n'} {score} sur {filteredQuestions.length}</Text>
-            {score <= filteredQuestions.length / 2 ? <Text style={styles.title}>Désolé {nameUser} Tu n'a pas réussi !</Text> : <Text style={styles.title}>Bon travail {nameUser} !</Text>}
+            <Text style={styles.title}>Votre score {'\n'} {'\n'} {score} sur {filteredQuestions.length}</Text>
+            {score <= filteredQuestions.length / 2
+                ? <Text style={styles.title}>Désolé {nameUser}, tu n'as pas réussi !</Text>
+                : <Text style={styles.title}>Bon travail {nameUser} !</Text>}
             <Button
                 onPress={resetQuiz}
                 title={'Recommencer'}
@@ -49,7 +71,6 @@ const Finish = ({score, filteredQuestions, resetQuiz, nameUser}: Props) => {
 };
 
 export default Finish;
-
 
 const styles = StyleSheet.create({
     container: {

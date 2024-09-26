@@ -1,8 +1,10 @@
-import {Pressable, StyleSheet} from 'react-native';
-import ButtonPlay from '@/components/ButtonPlay';
 import {DefaultInput, Text, useThemeColor, View} from '@/components/Themed';
 import Dropdown from "@/components/dropdown";
-import React, {useState} from "react";
+import React, { useState} from "react";
+import { StyleSheet, Pressable } from 'react-native';
+import ButtonPlay from "@/components/ButtonPlay";
+import {useMyContext} from "@/context/UserProvider";
+
 
 export default function Index() {
     const [selectedMatterName, setSelectedMatterName] = useState<string>(''); // Valeur par défaut
@@ -14,28 +16,24 @@ export default function Index() {
     const color = useThemeColor({light: lightColor, dark: darkColor}, 'text');
 
 
-    // Fonction qui démarre le quiz
-    const handleStartQuiz = () => {
-        setHasStarted(true); // On passe l'état à "true" pour désactiver l'input
-    };
 
     const handleReset = () => {
         setName('');
         setHasStarted(false);
     }
-
-
     // Fonction qui gère l'appui sur "OK"
     const handleNameSubmit = () => {
         if (name.length > 3) {
-            handleStartQuiz();
-        }
+            setHasStarted(true)
+            }
     };
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Quizz School</Text>
+            <Text style={styles.subtitle}>Ce Quizz a été conçu pour réviser ses cours scolaires.</Text>
             <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>
-
             {/* Désactive l'input si le quiz a commencé */}
             <DefaultInput
                 selectionColor={color}
@@ -68,7 +66,7 @@ export default function Index() {
 
             {/* Condition d'affichage du bouton si le nom a plus de 3 caractères */}
             {name.length > 3 && (
-                <Pressable onPress={handleStartQuiz}>
+                <Pressable  >
                     {() => (
                         <ButtonPlay matterName={selectedMatterName} name={name} setHasStarted={setHasStarted}/>
                     )}
