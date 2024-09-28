@@ -10,15 +10,15 @@ type ChoicesProps = {
     onSelectChoice: (choice: string) => void;
 };
 
-export const Choices: React.FC<ChoicesProps> = ({ choices, onSelectChoice }) => {
+export const Choices: React.FC<ChoicesProps> = ({choices, onSelectChoice}) => {
     const shuffledChoices = React.useMemo(() => [...choices].sort(() => Math.random() - 0.5), [choices]);
 
     return (
         <>
             {shuffledChoices.map((choice, index) => (
                 <View key={index}>
-                    <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-                    <Button style={styles.button} title={choice} onPress={() => onSelectChoice(choice)} />
+                    <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>
+                    <Button style={styles.button} title={choice} onPress={() => onSelectChoice(choice)}/>
                 </View>
             ))}
         </>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     button: {
         width: '100%',
         marginBottom: 10,
-        color:"#fff",
+        color: "#fff",
         borderRadius: 10,
     },
 });

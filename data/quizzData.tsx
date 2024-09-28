@@ -5,11 +5,14 @@ interface Question {
     correctAnswer: string;
 }
 
-// Définir l'interface pour une catégorie de questions
-interface Category {
-    [categoryName: string]: Question[];
+// Définir l'interface pour un ensemble de catégories
+interface Matter {
+    matter: string; // Propriété pour le nom de la catégorie
+    questions: Question[]; // Un tableau de questions pour chaque catégorie
 }
-const questions = [
+
+// Définir l'ensemble des catégories
+const dataQuizz :Matter[] = [
     {
         matter: "Francais",
         questions:[
@@ -1076,4 +1079,4 @@ const questions = [
 //     ],
 // };
 
-export default questions;
+export default dataQuizz;

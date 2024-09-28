@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useReducer } from 'react';
 
 // Création du Context
-const Context = createContext();
+ export const Context = createContext();
 
 // Provider du Context
 export const MyProvider = ({ reducer, initialState, children }) => (
@@ -11,7 +11,7 @@ export const MyProvider = ({ reducer, initialState, children }) => (
     </Context.Provider>
 );
 
-// Hook pour utiliser le Context
-export const useMyContext = () => {
-    return useContext(Context);
-};
+// // Hook pour utiliser le Context
+// export const useMyContext = () => {
+//     return useContext(Context);
+// };

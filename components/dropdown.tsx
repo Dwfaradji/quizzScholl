@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { Text, useThemeColor, View } from '@/components/Themed';
-import questions from "@/data/quizzData";
+import React, {useEffect, useState, useCallback} from 'react';
+import {StyleSheet} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {Text, useThemeColor, View} from '@/components/Themed';
+import dataQuizz from "@/data/quizzData";
 
 type DropDownProps = {
     setSelectedMatterName: (value: string) => void;
@@ -10,9 +10,9 @@ type DropDownProps = {
     darkColor?: string;
 };
 
-const Dropdown = ({ setSelectedMatterName, lightColor, darkColor }: DropDownProps) => {
-    const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-    const [selectedValue, setSelectedValue] = useState<string>(questions[0]?.matter || ''); // Default to the first matter if available
+const Dropdown = ({setSelectedMatterName, lightColor, darkColor}: DropDownProps) => {
+    const color = useThemeColor({light: lightColor, dark: darkColor}, 'text');
+    const [selectedValue, setSelectedValue] = useState<string>(dataQuizz[0]?.matter || ''); // Default to the first matter if available
 
     useEffect(() => {
         setSelectedMatterName(selectedValue);
@@ -32,13 +32,13 @@ const Dropdown = ({ setSelectedMatterName, lightColor, darkColor }: DropDownProp
             <Picker
                 selectedValue={selectedValue}
                 style={styles.picker}
-                itemStyle={{ color }}
+                itemStyle={{color}}
                 onValueChange={handleValueChange}
                 accessibilityLabel="Sélectionnez une matière"
                 prompt="Choisissez une matière"
             >
-                {questions.map((item) => (
-                    <Picker.Item label={item.matter} value={item.matter} key={item.matter} />
+                {dataQuizz.map((item) => (
+                    <Picker.Item label={item.matter} value={item.matter} key={item.matter}/>
                 ))}
             </Picker>
         </View>

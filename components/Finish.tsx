@@ -1,47 +1,42 @@
-import React, { useContext, useEffect } from 'react';
-import { Text, View } from "@/components/Themed";
-import { Button } from "@rneui/themed";
-import { StyleSheet } from "react-native";
-import { useMyContext } from "@/context/UserProvider";
+import React, {useEffect} from 'react';
+import {Text, View} from "@/components/Themed";
+import {Button} from "@rneui/themed";
+import {StyleSheet} from "react-native";
+import {useMyContext} from "@/hooks/useMyContext";
 
 type Props = {
     score: number;
     filteredQuestions: any[];
     resetQuiz: () => void;
-    nameUser: string;
+    userName: string;
     matter: string;
 };
 
-const Finish = ({ score, filteredQuestions, resetQuiz, nameUser, matter }: Props) => {
-    const [state, dispatch] = useMyContext();
+const Finish = ({score, filteredQuestions, resetQuiz, userName, matter}: Props) => {
+    const [state,dispatch] = useMyContext();
 
     useEffect(() => {
-        console.log("Mise à jour du score pour l'utilisateur :", nameUser);
-        console.log("Score :", score);
-        console.log("Matière :", matter);
-
-        // Exemple pour mettre à jour une matière
         dispatch({
             type: 'ADD_MATTER',
             payload: {
-                user: nameUser,
+                user: userName,
                 matter: matter,
                 score: score,
             }
         });
-    }, [score, matter, nameUser, dispatch]);
+    }, [score, matter, userName, dispatch]);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Félicitations !{'\n'} Vous avez terminé le quiz.</Text>
             <Text style={styles.title}>Votre score {'\n'} {'\n'} {score} sur {filteredQuestions.length}</Text>
             {score <= filteredQuestions.length / 2
-                ? <Text style={styles.title}>Désolé {nameUser}, tu n'as pas réussi !</Text>
-                : <Text style={styles.title}>Bon travail {nameUser} !</Text>}
+                ? <Text style={styles.title}>Désolé {userName}, tu n'as pas réussi !</Text>
+                : <Text style={styles.title}>Bon travail {userName} !</Text>}
             <Button
                 onPress={resetQuiz}
                 title={'Recommencer'}
-                titleStyle={{ fontWeight: 'bold', fontSize: 18 }}
+                titleStyle={{fontWeight: 'bold', fontSize: 18}}
                 linearGradientProps={{
                     colors: ['#FF9800', '#F44336'],
                     start: [1, 0],
@@ -64,7 +59,7 @@ const Finish = ({ score, filteredQuestions, resetQuiz, nameUser, matter }: Props
                     color: 'white',
                 }}
                 iconRight
-                iconContainerStyle={{ marginLeft: 10, marginRight: -10 }}
+                iconContainerStyle={{marginLeft: 10, marginRight: -10}}
             />
         </View>
     );

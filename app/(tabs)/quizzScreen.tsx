@@ -1,16 +1,24 @@
-import { Text, View } from '@/components/Themed';
-import React, { useEffect, useRef, useState } from "react";
-import questions from '../../data/quizzData';
+import {Text, View} from '@/components/Themed';
+import React, {useEffect, useRef, useState} from "react";
+import dataQuizz from '../../data/quizzData';
 import Timer from "@/components/Timer";
-import { Choices } from "@/components/Choices";
+import {Choices} from "@/components/Choices";
 import Finish from "@/components/Finish";
 import slideToNextQuestion from "@/function/animateSlide";
-import { Animated } from "react-native";
-import { StyleSheet } from 'react-native';
+import {Animated} from "react-native";
+import {StyleSheet} from 'react-native';
+import {useLocalSearchParams} from 'expo-router'; // Hook alternatif pour récupérer les paramètres
 
-export default function QuizzScreen({ route }: { route: any }) {
-    const categoryName = route.params.name;
-    const nameUser = route.params.nameUser;
+type QuizzScreenProps = {
+    name: string;
+    nameUser: string;
+    subject: string;
+}
+
+export default function QuizzScreen() {
+    const {name, nameUser, subject}: QuizzScreenProps = useLocalSearchParams();
+    const categoryName = name;
+    const userName = nameUser;
     const [questionNumber, setQuestionNumber] = useState<number>(0);
     const [isFinished, setIsFinished] = useState<boolean>(false);
     const [score, setScore] = useState<number>(0);
@@ -21,7 +29,7 @@ export default function QuizzScreen({ route }: { route: any }) {
 
     // Filter questions by category
     const filterQuestionsByCategory = (categoryName: string) => {
-        return questions
+        return dataQuizz
             .filter((item) => item.matter === categoryName && Array.isArray(item.questions))
             .flatMap((item) => item.questions);
     };
@@ -39,7 +47,7 @@ export default function QuizzScreen({ route }: { route: any }) {
             setScore(prev => prev + 1);
         }
         questionNumber < filteredQuestions.length - 1 ?
-            slideToNextQuestion({ slideAnim, setQuestionNumber, setTimer }) :
+            slideToNextQuestion({slideAnim, setQuestionNumber, setTimer}) :
             setIsFinished(true);
     };
 
@@ -48,7 +56,7 @@ export default function QuizzScreen({ route }: { route: any }) {
         if (!isFinished) {
             if (timer === 0) {
                 questionNumber < filteredQuestions.length - 1 ?
-                    slideToNextQuestion({ slideAnim, setQuestionNumber, setTimer }) :
+                    slideToNextQuestion({slideAnim, setQuestionNumber, setTimer}) :
                     setIsFinished(true);
             } else {
                 const countdown = setTimeout(() => setTimer(prev => prev - 1), 1000);
@@ -72,7 +80,7 @@ export default function QuizzScreen({ route }: { route: any }) {
                 score={score}
                 filteredQuestions={filteredQuestions}
                 resetQuiz={resetQuiz}
-                nameUser={nameUser}
+                userName={userName}
                 matter={categoryName}
             />
         );
@@ -81,7 +89,7 @@ export default function QuizzScreen({ route }: { route: any }) {
     // Render quiz
     return (
         <View style={styles.container}>
-            <Animated.View style={[styles.animatedContainer, { transform: [{ translateX: slideAnim }] }]}>
+            <Animated.View style={[styles.animatedContainer, {transform: [{translateX: slideAnim}]}]}>
                 {questions1.length > 0 && (
                     <>
                         <Text style={styles.title}>{questions1[questionNumber]?.question}</Text>
@@ -91,9 +99,9 @@ export default function QuizzScreen({ route }: { route: any }) {
                         />
                     </>
                 )}
-                <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+                <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)"/>
             </Animated.View>
-            <Timer timer={timer} />
+            <Timer timer={timer}/>
         </View>
     );
 }

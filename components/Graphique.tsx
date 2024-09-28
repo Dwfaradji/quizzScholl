@@ -1,16 +1,24 @@
 import React from 'react';
 import { PieChart } from 'react-native-chart-kit';
 import { View, Dimensions, Text, StyleSheet } from 'react-native';
-import { useMyContext } from "@/context/UserProvider";
+import { useMyContext } from "@/hooks/useMyContext";
 
+// Dimensions de l'écran
 const screenWidth = Dimensions.get("window").width;
 
-export default function Graphique() {
+// Définir une interface pour les données de progression
+interface Progress {
+    score: number; // Score de l'utilisateur
+    matter: string; // Matière associée
+}
+
+// Composant Graphique
+const Graphique: React.FC = () => {
     const [state] = useMyContext();
     const { users, currentUser } = state;
 
     // Récupérez les progrès de l'utilisateur courant
-    const userProgress = users.find(user => user.user === currentUser)?.progress || [];
+    const userProgress: Progress[] = users.find((user: { user: any; }) => user.user === currentUser)?.progress || [];
 
     // Assurez-vous qu'il y a des données à afficher
     if (userProgress.length === 0) {
@@ -18,7 +26,7 @@ export default function Graphique() {
     }
 
     // Associer chaque matière à une couleur spécifique
-    const colors = {
+    const colors: Record<string, string> = {
         Francais: "#FF6384",
         Mathematiques: "#36A2EB",
         Anglais: "#FFCE56",
@@ -31,21 +39,17 @@ export default function Graphique() {
         Numerique: "#4BC0C0"
     };
 
-    // Calculer le total des scores
-    const totalScore = userProgress.reduce((total, progress) => total + progress.score, 0);
-
     // Préparer les données pour le graphique avec les pourcentages
     const data = userProgress.map(progress => {
         const percentage = ((progress.score / 10) * 100); // Calculer le pourcentage
         return {
-            name: `${percentage}% ${progress.matter}`, // Ajouter le pourcentage au label
+            name: `${percentage.toFixed(2)}% ${progress.matter}`, // Ajouter le pourcentage au label
             population: progress.score, // Utilisation du score comme "population" pour le PieChart
             color: colors[progress.matter] || "#000", // Couleur associée à la matière
             legendFontColor: "#7F7F7F",
             legendFontSize: 15
         };
     });
-
 
     return (
         <View style={styles.container}>
@@ -67,7 +71,6 @@ export default function Graphique() {
                 paddingLeft={"100"}
                 absolute
             />
-
             {/* Légende sous le graphique */}
             <View style={styles.legendContainer}>
                 {data.map((item, index) => (
@@ -79,14 +82,13 @@ export default function Graphique() {
             </View>
         </View>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-start",
         alignItems: 'center',
-
     },
     legendContainer: {
         flexDirection: 'row',
@@ -110,9 +112,12 @@ const styles = StyleSheet.create({
     legendText: {
         fontSize: 14,
         color: "#7F7F7F",
-    }, separator: {
+    },
+    separator: {
         marginVertical: 30,
         height: 1,
         width: '80%',
     },
 });
+
+export default Graphique;

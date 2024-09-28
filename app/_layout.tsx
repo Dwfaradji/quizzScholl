@@ -1,44 +1,22 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider} from '@react-navigation/native';
-import {useFonts} from 'expo-font';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import {useEffect} from 'react';
-import 'react-native-reanimated';
-import * as React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useColorScheme} from '@/hooks/useColorScheme';
-import QuizzScreen from "@/app/(tabs)/quizzScreen";
-import Index from "@/app/(tabs)";
-import {Pressable, StyleSheet} from "react-native";
-import ModalScreen from "@/app/modalScreen";
-import {MyProvider} from "@/context/UserProvider";
-import {initialState, reducer} from "@/context/UserReducer";
-// import {UserProvider} from "@/context/UserProvider";
-// @ts-ignore
+import { useEffect } from 'react';
+import { MyProvider } from "@/context/UserProvider";
+import { initialState, reducer } from "@/context/UserReducer";
+import { Link, Stack,  } from "expo-router"; // Utilisation correcte de Slot
+import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Définition des types pour les paramètres de chaque écran
 
 // Définir les paramètres de votre stack
-export type RootStackParamList = {
-    Accueil: undefined; // Pas de paramètres pour Home
-    QuizzScreen: { subject: string }; // Quizz nécessite un paramètre 'subject'
-    Infos: undefined;
-};
+// export type RootStackParamList = {
+//     Home: undefined; // Pas de paramètres pour Home
+//     QuizzScreen: { subject: string }; // Quizz nécessite un paramètre 'subject'
+//     Infos: undefined; // Pas de paramètres pour Infos
+// };
 
-// Typage du stack
-const Stack = createNativeStackNavigator<RootStackParamList>(); // Utiliser RootStackParamList ici
-
-export {
-    // Catch any errors thrown by the Layout component.
-    ErrorBoundary,
-} from 'expo-router';
-
-export const unstable_settings = {
-    // Ensure that reloading on `/modal` keeps a back button present.
-    initialRouteName: '(tabs)',
-};
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prévenir le splash screen de se cacher
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -47,7 +25,6 @@ export default function RootLayout() {
         ...FontAwesome.font,
     });
 
-    // Expo Router uses Error Boundaries to catch errors in the navigation tree.
     useEffect(() => {
         if (error) throw error;
     }, [error]);
@@ -59,52 +36,48 @@ export default function RootLayout() {
     }, [loaded]);
 
     if (!loaded) {
-        return null;
+        return null; // Ne pas rendre l'application tant que les polices ne sont pas chargées
     }
 
-    return <RootLayoutNav/>;
+    return <RootLayoutNav />;
 }
-
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
 
     return (
-
         <MyProvider initialState={initialState} reducer={reducer}>
-        <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DarkTheme}>
-
-            <NavigationContainer independent={true}>
-                <Stack.Navigator
-                    screenOptions={({navigation}) => ({
+            <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DarkTheme}>
+                <Stack
+                    initialRouteName="index"
+                    screenOptions={{
+                        title:"Accueil",
+                        headerShown: true,
                         headerStyle: {
                             backgroundColor: '#4a90e2', // Couleur de l'en-tête
                         },
-                        headerTintColor: '#fff', // Couleur du texte et des icônes dans l'en-tête
+                        headerTintColor: '#fff',
                         headerRight: () => (
-                            <Pressable onPress={() => navigation.navigate('Infos')}>
-                                <FontAwesome name="info-circle" size={24} color="#fff" style={{marginRight: 15}}/>
-                            </Pressable>
+                            <Link href="/modalScreen">
+                                <FontAwesome name="info-circle" size={24} color="#fff" style={{ marginRight: 15 }} />
+                            </Link>
                         ),
-                    })}
+                    }}
                 >
-                    <Stack.Screen name="Accueil" component={Index}/>
                     <Stack.Screen
-                        name="QuizzScreen"
-                        component={QuizzScreen}
-                        options={({route}) => ({
-                            // TypeScript saura que route.params a bien un 'subject'
-                            title: `${route.params?.subject || 'Quizz'} `
+                        name="(tabs)/quizzScreen" // Nom de l'écran Quizz
+                        options={({ route } : {route:any}  ) => ({
+                            title: route.params?.subject ? route.params.subject : 'Mon Quiz',
                         })}
                     />
                     <Stack.Screen
-                        name="Infos"
-                        component={ModalScreen}
-                        options={{presentation: 'modal'}} // Option pour modal
+                        name="modalScreen"
+                        options={{
+                            title: 'Infos', // Titre pour votre écran modal
+                            presentation: 'modal', // Présentation de l'écran modal
+                        }}
                     />
-                </Stack.Navigator>
-            </NavigationContainer>
-
-        </ThemeProvider>
-            </MyProvider>
+                </Stack>
+            </ThemeProvider>
+        </MyProvider>
     );
 }

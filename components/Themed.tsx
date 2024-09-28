@@ -37,7 +37,7 @@ export function Text(props: TextProps) {
 export function DefaultInput(props: InputProps) {
     const {lightColor, darkColor, ref, ...otherProps} = props;
     const color = useThemeColor({light: lightColor, dark: darkColor}, 'text');
-    return <Input ref={ref as LegacyRef<TextInput>} inputStyle={[{color}]} {...otherProps}   />;
+    return <Input ref={ref as LegacyRef<TextInput>} inputStyle={[{color}]} {...otherProps}  />;
 }
 
 // Composant View avec gestion des couleurs en fonction du thème
